@@ -2341,6 +2341,19 @@ static struct snd_soc_dai_link msm8226_9306_dai[] = {
 		.be_hw_params_fixup = msm_be_mi2s_hw_params_fixup,
 		.ops = &msm8226_mi2s_be_ops,
 	},
+	{
+		.name = "MI2S TX Hostless Capture",
+		.stream_name = "MI2S TX Hostless Capture",
+		.cpu_dai_name	= "MI2S_TX_HOSTLESS",
+		.platform_name  = "msm-pcm-hostless",
+		.dynamic = 1,
+		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+		.no_host_mode = SND_SOC_DAI_LINK_NO_HOST,
+		.ignore_suspend = 1,
+		.ignore_pmdown_time = 1, 
+		.codec_dai_name = "snd-soc-dummy-dai",
+		.codec_name = "snd-soc-dummy",
+	},
 };
 
 static struct snd_soc_dai_link msm8226_9302_dai[] = {
@@ -2888,7 +2901,7 @@ static __devinit int msm8226_asoc_machine_probe(struct platform_device *pdev)
 			continue;
 		}
 		for (j = 0; j < ARRAY_SIZE(HTC_AUD_HW_LIST); j++) {
-			if (!strncmp(str, HTC_AUD_HW_LIST[j].name, sizeof(HTC_AUD_HW_LIST[j].name)) &&
+			if (!strncmp(str, HTC_AUD_HW_LIST[j].name, sizeof(*HTC_AUD_HW_LIST[j].name)) &&
                 strlen(str) == strlen(HTC_AUD_HW_LIST[j].name)) {
 				htc_hw_component_mask |= HTC_AUD_HW_LIST[j].id;
 				dev_info(&pdev->dev, "Found HW: %s, htc_hw_component_mask 0x%X.\n",
